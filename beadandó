@@ -1,0 +1,5 @@
+import pandas as pd
+import numpy as np
+from scipy.stats import norm
+
+asset1_prices = pd.read_csv(file_path1, parse_dates=['Date'])
