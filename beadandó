@@ -186,15 +186,31 @@ import random
 random.seed(31415)
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Historikus adatok betöltése
 etf_prices = pd.read_csv("SPY.csv", parse_dates=['Date'])
 
 # Hozamszámítás
-etf_returns = etf_prices['Adj Close'].pct_change().dropna()
+etf_returns = np.log(etf_prices['Adj Close'].pct_change().dropna()+1)
 
 # Autograde Function: calculate_ewma_variance
 def calculate_ewma_variance(df_etf_returns, decay_factor, window):
     ewma_variance = df_etf_returns.ewm(alpha=1-decay_factor, min_periods=window).var()
     return ewma_variance
+
+# EVMA variancia különböző "decay factor" mellett
+decay_factors = [0.94, 0.97]
+window_size = 100
+
+for decay_factor in decay_factors:
+    ewma_variances = calculate_ewma_variance(etf_returns, decay_factor, window_size)
+    plt.plot(ewma_variances, label=f'Decay Factor: {decay_factor}')
+
+#Plot formázása
+plt.title('EWMA Variance')
+plt.xlabel('Time')
+plt.ylabel('Variance')
+plt.legend()
+plt.show()
 
