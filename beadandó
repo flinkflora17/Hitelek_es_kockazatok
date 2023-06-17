@@ -62,3 +62,81 @@ alpha = 0.05  # Confidence level for VaR
 for i in range(len(weights)):
     var = calculate_historical_var(portfolio_returns[i], alpha)
     print(f"For weight {weights[i]:.1f}, VaR at {alpha*100}% confidence level: {var:.4f}")
+
+# 2.feladat
+
+expected_return_spy = np.mean(spy_ret)
+expected_return_sbux = np.mean(sbux_ret)
+
+volatility_spy = spy_ret.var()
+volatility_sbux = sbux_ret.var()
+
+correlation = 0.5
+
+weight_spy = 1 / volatility_spy
+weight_sbux = 1 / volatility_sbux
+total_weight = weight_spy + weight_sbux
+weight_spy /= total_weight
+weight_sbux /= total_weight
+
+print(weight_spy, weight_sbux)
+
+# Autograde Function: simulated_returns
+def simulated_returns(expected_return, volatility, correlation, num_of_sim):
+    cov_matrix = np.array([[volatility**2, correlation * volatility * volatility],
+                          [correlation * volatility * volatility, volatility**2]])
+    simulated_returns = np.random.multivariate_normal([expected_return, expected_return], cov_matrix, num_of_sim)
+    return simulated_returns
+
+# Hozam szimuláció a két eszközre
+num_of_simulations = 10000
+simulated_returns_spy = simulated_returns(expected_return_spy, volatility_spy, 1.0, num_of_simulations)
+simulated_returns_sbux = simulated_returns(expected_return_sbux, volatility_sbux, 1.0, num_of_simulations)
+
+# Portfólió létrehozása
+portfolio_returns = weight_spy * simulated_returns_spy + weight_sbux * simulated_returns_sbux
+
+print(portfolio_returns[1])
+
+portfolio_returns_1 = []
+
+for i in range(len(portfolio_returns)):
+  portfolio_returns_1.append(portfolio_returns[i][1])
+
+# VaR
+alpha = 0.05  # Confidence level for VaR
+sorted_returns = np.sort(portfolio_returns_1)
+var_idx = int(np.floor(alpha * num_of_simulations))
+var = sorted_returns[var_idx]
+
+VaRs = []
+
+correlations = np.arange(0, 1.1, 0.05)
+for corr in correlations:
+    # Hozam szimuláció a két eszközre
+    num_of_simulations = 10000
+    simulated_returns_spy = simulated_returns(expected_return_spy, volatility_spy, corr, num_of_simulations)
+    simulated_returns_sbux = simulated_returns(expected_return_sbux, volatility_sbux, corr, num_of_simulations)
+
+    # Portfólió létrehozása
+    portfolio_returns = weight_spy * simulated_returns_spy + weight_sbux * simulated_returns_sbux
+    portfolio_returns_1 = []
+
+    for i in range(len(portfolio_returns)):
+      portfolio_returns_1.append(portfolio_returns[i][1])
+
+    # VaR
+    alpha = 0.05  # Confidence level for VaR
+    sorted_returns = np.sort(portfolio_returns_1)
+    var_idx = int(np.floor(alpha * num_of_simulations))
+    var = sorted_returns[var_idx]
+    VaRs.append(var)
+
+print(VaRs)
+
+plt.plot(correlations, VaRs, marker='o')
+plt.title('VaR vs. Correlation')
+plt.xlabel('Correlation')
+plt.ylabel('VaR')
+plt.grid(True)
+plt.show()
