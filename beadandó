@@ -1,4 +1,4 @@
-# A kód a Starbucks (sbux) és SPDR S&P 500 ETF Trust fund (spy) historikus adataival dolgozik.
+# A kód a Starbucks (sbux) és SPDR S&P 500 ETF (spy) historikus adataival dolgozik.
 # Az adatok az elmúlt 5 évből vannak a 2018.06.18.-2023.06.17.-ig terjedő időszakra.
 
 # Packagek importálása
@@ -15,10 +15,31 @@ sbux = pd.read_csv('SBUX.csv', parse_dates=['Date'])
 sbux.head()
 spy.head()
 
+#Starbucks ábra
+plt.plot(sbux.Date, sbux.Close)
+plt.xlabel('Date')
+plt.ylabel('SBUX')
+plt.title('Starbucks stock value')
+
+plt.tight_layout()
+
+plt.show()
+
+# SPY ábra
+
+plt.plot(spy.Date, spy.Close)
+plt.xlabel('Date')
+plt.ylabel('SBUX')
+plt.title('S&P 500 ETF value')
+
+plt.tight_layout()
+
+plt.show()
+
 #1. feladat
 #Napi hozamok kiszámítása
-spy_ret = spy['Close'].pct_change().dropna()
-sbux_ret = sbux['Close'].pct_change().dropna()
+spy_ret = spy['Adj Close'].pct_change().dropna()
+sbux_ret = sbux['Adj Close'].pct_change().dropna()
 spy_ret.head()
 
 # Portfólió hozamának és varianciájának kiszámítása különböző súlyok mellett (0-1)
@@ -64,7 +85,7 @@ def calculate_historical_var(df_portfolio_returns, alpha):
     return sorted_returns[var_idx]
 
 # Példa a függvény használatára
-alpha = 0.05  # Confidence level for VaR
+alpha = 0.95  # Confidence level for VaR
 
 for i in range(len(weights)):
     var = calculate_historical_var(portfolio_returns[i], alpha)
@@ -116,6 +137,7 @@ sorted_returns = np.sort(portfolio_returns_1)
 var_idx = int(np.floor(alpha * num_of_simulations))
 var = sorted_returns[var_idx]
 
+# Különböző korrelációk melletti VaR
 VaRs = []
 
 correlations = np.arange(0, 1.1, 0.05)
