@@ -179,3 +179,22 @@ plt.xlabel('Correlation')
 plt.ylabel('VaR')
 plt.grid(True)
 plt.show()
+
+#3. feladat (EWMA Estimation of Variance)
+
+import random
+random.seed(31415)
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Historikus adatok betöltése
+etf_prices = pd.read_csv("SPY.csv", parse_dates=['Date'])
+
+# Hozamszámítás
+etf_returns = etf_prices['Adj Close'].pct_change().dropna()
+
+# Autograde Function: calculate_ewma_variance
+def calculate_ewma_variance(df_etf_returns, decay_factor, window):
+    ewma_variance = df_etf_returns.ewm(alpha=1-decay_factor, min_periods=window).var()
+    return ewma_variance
+
