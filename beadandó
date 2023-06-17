@@ -1,9 +1,14 @@
+# A kód a Starbucks (sbux) és SPDR S&P 500 ETF Trust fund (spy) historikus adataival dolgozik.
+# Az adatok az elmúlt 5 évből vannak a 2018.06.18.-2023.06.17.-ig terjedő időszakra.
+
+# Packagek importálása
 import random
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 
+# seed beállítása és adatok beolvasása
 random.seed(31415)
 spy = pd.read_csv('SPY.csv', parse_dates=['Date'])
 sbux = pd.read_csv('SBUX.csv', parse_dates=['Date'])
