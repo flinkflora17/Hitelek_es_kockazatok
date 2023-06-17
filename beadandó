@@ -230,7 +230,7 @@ asset_returns = np.log(asset_prices['Adj Close'].pct_change().dropna()+1)
 squared_returns = asset_returns**2
 
 # Lag beállítása
-lags = range(5, 16)  # Lags between 5 and 15
+lags = range(5, 16)  # A lagok 5 és 15 közöttiek
 
 X = pd.concat([squared_returns.shift(lag) for lag in lags], axis=1)
 X.columns = [f'Lag_{lag}' for lag in lags]
@@ -248,10 +248,10 @@ for train_index, test_index in tscv.split(X):
     X_train, X_test = X.iloc[train_index], X.iloc[test_index]
     y_train, y_test = y.iloc[train_index], y.iloc[test_index]
 
-    #Tanítóadatbázison
+    # Tanítóadatbázison
     model.fit(X_train, y_train)
 
-    #Tesztadatbázison
+    # Tesztadatbázison
     y_pred = model.predict(X_test)
 
     # MSE kiszámítása
@@ -261,4 +261,4 @@ for train_index, test_index in tscv.split(X):
 # MSE
 mean_mse = np.mean(mse_scores)
 print (mse_scores)
-print(f"Mean Squared Error (MSE): {mean_mse:.4f}")
+print(f"Mean Squared Error (MSE): {mean_mse:.8f}")
