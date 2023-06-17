@@ -1,8 +1,10 @@
+import random
 import pandas as pd
 import numpy as np
 from scipy.stats import norm
 import matplotlib.pyplot as plt
 
+random.seed(31415)
 spy = pd.read_csv('SPY.csv', parse_dates=['Date'])
 sbux = pd.read_csv('SBUX.csv', parse_dates=['Date'])
 sbux.head()
